@@ -34,7 +34,7 @@ if (!gotTheLock) {
 }
 
 // 첫 번째 인스턴스인 경우
-app.on('second-instance', (event, commandLine, workingDirectory) => {
+app.on('second-instance', () => {
     console.log('second instance detected');
     if (win) {
         if (win.isMinimized()) {
