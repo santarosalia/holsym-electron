@@ -1,7 +1,7 @@
 {
-    "name": "electron-vite-project",
+    "name": "manghi-holy-symbol-timer",
     "private": true,
-    "version": "0.0.0",
+    "version": "1.0.0",
     "type": "module",
     "scripts": {
         "dev": "vite",

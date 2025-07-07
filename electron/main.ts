@@ -25,7 +25,25 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 
 let win: BrowserWindow | null;
 let tray: Tray | null;
+const gotTheLock = app.requestSingleInstanceLock();
 
+if (!gotTheLock) {
+    console.log('already running');
+    app.quit();
+    process.exit(0);
+}
+
+// 첫 번째 인스턴스인 경우
+app.on('second-instance', (event, commandLine, workingDirectory) => {
+    console.log('second instance detected');
+    if (win) {
+        if (win.isMinimized()) {
+            win.restore();
+        }
+        win.show();
+        win.focus();
+    }
+});
 function createWindow() {
     win = new BrowserWindow({
         icon: path.join(process.env.VITE_PUBLIC, 'holysymbol.png'),
@@ -153,7 +171,7 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) {
+    if (process.platform === 'darwin' && BrowserWindow.getAllWindows().length === 0) {
         createWindow();
     }
 });
@@ -161,6 +179,12 @@ app.on('activate', () => {
 app.on('before-quit', () => {
     if (tray) {
         tray.destroy();
+        tray = null;
+    }
+
+    if (win) {
+        win.destroy();
+        win = null;
     }
 });
 
